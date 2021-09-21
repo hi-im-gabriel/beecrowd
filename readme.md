@@ -3,3 +3,11 @@
 <a href="https://www.urionlinejudge.com.br/judge/"><img src="https://imgur.com/5NwUUpc.png"/></a">
 </p>
 </h1>
+
+```bash
+# IDE Utilizada <IDE>:
+> Visual Studio Code
+
+# Linguagem Utilizada <Language>:
+> Python 3.8/3.9
+```

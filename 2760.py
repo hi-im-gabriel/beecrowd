@@ -1,0 +1,7 @@
+s1=input()
+s2=input()
+s3=input()
+print(s1+s2+s3)
+print(s2+s3+s1)
+print(s3+s1+s2)
+print('%s%s%s'%(s1[:10], s2[:10], s3[:10]))

@@ -13,6 +13,6 @@
 ```
 <p align="center">
 <a href="https://www.urionlinejudge.com.br/judge/pt/profile/255057">
-    <img alt="Meu perfil no URI" src="https://imgur.com/ALN2qSI.png">
+    <img alt="Meu perfil no URI" src="https://i.ibb.co/q05xPQ6/prof.png">
   </a>
 </p>

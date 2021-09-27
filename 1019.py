@@ -1,0 +1,5 @@
+n=int(input())
+hor=int(n/3600)
+min=int(n%3600/60)
+seg=int(n%60)
+print(f"{hor}:{min}:{seg}")

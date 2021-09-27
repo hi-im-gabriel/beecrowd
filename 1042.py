@@ -1,0 +1,5 @@
+x=list(map(int,input().split()))
+z=sorted(x)
+print(*z,sep="\n")
+print()
+print(*x,sep="\n")

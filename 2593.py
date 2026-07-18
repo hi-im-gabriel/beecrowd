@@ -13,6 +13,6 @@ for c in palavra:
         i=s+len(c)
         try:
             if texto[s-1] not in alfa and texto[i] not in alfa:f.append(s-1)
-        except:pass
+        except Exception:pass
     if not f:f.append(-1)
     print(*f,sep=" ")

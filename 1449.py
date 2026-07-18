@@ -10,6 +10,6 @@ for _ in range(int(input())):
         for i in range(len(s)):
             try:
                 s[i]=d[s[i]]
-            except:pass
+            except Exception:pass
         print(*s,sep=" ")
     print()

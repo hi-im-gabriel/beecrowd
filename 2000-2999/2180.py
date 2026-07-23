@@ -1,30 +1,3 @@
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
 #n= list(map(int,input().split()))
 #string.append(input()) array
 #s=sorted(s,key=len,reverse=True)
@@ -34,6 +7,7 @@
 #import string
 #alfa = list(string.ascii_lowercase) lsit do alfabeto
 from math import sqrt
+
 n = int(input())
 primo = []
 for i in range(n, 64000):

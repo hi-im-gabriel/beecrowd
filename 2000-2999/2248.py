@@ -1,29 +1,3 @@
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
 #n=list(map(int,input().split()))
 #s.pop() remover ultimo elemento
 #s=sorted(s,key=len,reverse=True)
@@ -32,6 +6,7 @@
 #a=set(d).intersection(e)
 #import string
 #alfa = list(string.ascii_lowercase) lsit do alfa
+
 turma = 1
 while True:
     n =int(input())
@@ -41,8 +16,10 @@ while True:
     while n:
         n -= 1
         c.append([int(x) for x in input().split()])
+
     maior = max([x[1] for x in c])
     estagio = [str(x[0]) for x in c if x[1] == maior]
+
     print('Turma %d' % turma)
     print(' '.join(estagio), '')
     print()

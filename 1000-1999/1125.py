@@ -1,54 +1,3 @@
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
 #n=list(map(int,input().split()))
 #s.pop() remover ultimo elemento
 #s=sorted(s,key=len,reverse=True)
@@ -66,16 +15,19 @@ def get_results(my_list):
         if (my_list[i]==greater):
             line+=str(i+1)+' '
     return line.strip()
+
 def complete_sc(my_list, n_pilots):
     for i in range(n_pilots - len(my_list) + 1):
         my_list.append(0)
     return my_list
     
+
 def map_to_list(x):
     my_list = []
     for i in range(x):
         my_list.append(0)  
     return my_list  
+
 abcdefgtasd=1
 while(True):
     line = input()

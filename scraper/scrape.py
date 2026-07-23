@@ -48,7 +48,26 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="List eligible submissions without downloading them.",
     )
+    parser.add_argument(
+        "--codes",
+        type=parse_codes,
+        help=(
+            "Comma-separated problem codes to download and overwrite, "
+            "even when their files already exist."
+        ),
+    )
     return parser.parse_args()
+
+
+def parse_codes(value: str) -> set[str]:
+    codes = {code.strip() for code in value.split(",") if code.strip()}
+    invalid = sorted(code for code in codes if not code.isdigit())
+    if not codes or invalid:
+        message = "provide at least one numeric problem code"
+        if invalid:
+            message = f"invalid problem code(s): {', '.join(invalid)}"
+        raise argparse.ArgumentTypeError(message)
+    return codes
 
 
 def credentials() -> tuple[str, str]:
@@ -132,14 +151,18 @@ def submissions_on_page(page: Page, page_number: int) -> list[Submission]:
 
 def fetch_code(page: Page, submission: Submission) -> str:
     page.goto(submission.code_url, wait_until="domcontentloaded")
-    code = page.locator(".ace_scroller pre#code")
-    if not code.count():
-        code = page.locator("pre#code")
-    code.wait_for(state="visible")
-    return code.inner_text().replace("\r\n", "\n").rstrip() + "\n"
+    code_lines = page.locator(".ace_content .ace_text-layer .ace_line")
+    code_lines.first.wait_for(state="visible")
+    code = "\n".join(code_lines.all_text_contents())
+    return code.replace("\r\n", "\n").rstrip() + "\n"
 
 
-def scrape(page: Page, max_pages: int | None, dry_run: bool) -> int:
+def scrape(
+    page: Page,
+    max_pages: int | None,
+    dry_run: bool,
+    requested_codes: set[str] | None,
+) -> int:
     existing = existing_problem_codes()
     selected: set[str] = set()
     downloaded = 0
@@ -149,6 +172,11 @@ def scrape(page: Page, max_pages: int | None, dry_run: bool) -> int:
     console.print(
         f"[dim]Found {len(existing)} existing Python solution(s) in the repository.[/]"
     )
+    if requested_codes:
+        console.print(
+            f"[bold magenta]Override mode:[/] looking for "
+            f"{len(requested_codes)} requested problem(s)."
+        )
 
     while max_pages is None or page_number <= max_pages:
         with console.status(
@@ -167,7 +195,11 @@ def scrape(page: Page, max_pages: int | None, dry_run: bool) -> int:
         eligible = [
             submission
             for submission in python_submissions
-            if submission.problem not in existing
+            if (
+                submission.problem in requested_codes
+                if requested_codes
+                else submission.problem not in existing
+            )
             and submission.problem not in selected
         ]
         stats["runs"] += len(submissions)
@@ -204,10 +236,20 @@ def scrape(page: Page, max_pages: int | None, dry_run: bool) -> int:
             f"[green]{len(python_submissions)}[/] Python 3  •  "
             f"[yellow]{len(eligible)}[/] new"
         )
+        if requested_codes and selected == requested_codes:
+            console.print("[bold green]✓[/] All requested problems were found.")
+            break
         page_number += 1
 
     stats["downloaded"] = downloaded
     show_summary(stats, dry_run)
+    if requested_codes:
+        missing = requested_codes - selected
+        if missing:
+            console.print(
+                "[bold yellow]Not found as accepted Python 3:[/] "
+                + ", ".join(sorted(missing, key=int))
+            )
     return downloaded
 
 
@@ -248,7 +290,7 @@ def main() -> int:
             context = browser.new_context()
             page = context.new_page()
             login(page, email, password)
-            scrape(page, args.max_pages, args.dry_run)
+            scrape(page, args.max_pages, args.dry_run, args.codes)
             browser.close()
         return 0
     except Exception as error:

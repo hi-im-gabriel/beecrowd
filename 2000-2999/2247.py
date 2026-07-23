@@ -1,17 +1,3 @@
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
 test = 1
 while True:
     n = int(input())
@@ -24,4 +10,5 @@ while True:
         j, z = list(map(int, input().split()))
         value += (j - z)
         print(value)
+
     print()

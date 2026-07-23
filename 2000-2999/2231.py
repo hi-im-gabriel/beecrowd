@@ -1,24 +1,5 @@
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
 test = 1
+
 while True:
     n, m = map(int, input().split())
     if n == 0 and m == 0:
@@ -26,6 +7,7 @@ while True:
     l = []
     for _ in range(n):
         l.append(int(input()))
+
     avgs = []
     window_sum = sum(l[:m])
     avgs.append(int(window_sum / m))

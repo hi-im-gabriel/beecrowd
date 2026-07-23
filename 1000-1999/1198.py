@@ -1,16 +1,3 @@
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
 #n= list(map(int,input().split()))
 while True:
     try:
@@ -21,5 +8,6 @@ while True:
         if x < 0:
             x=x*-1
         print(x)
+
     except EOFError:
         break

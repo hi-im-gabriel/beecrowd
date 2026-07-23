@@ -1,20 +1,8 @@
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
 #n= list(map(int,input().split()))
 #string.split('+',2)
+
 n=int(input())
+
 while n:
     string=input()
     if string=="P=NP":
@@ -22,4 +10,5 @@ while n:
     else:
         a,b=string.split('+',2)
         print(int(a)+int(b))
+
     n-=1

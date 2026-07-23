@@ -1,23 +1,3 @@
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
 #n=list(map(int,input().split()))
 #s.pop() remover ultimo elemento
 #s=sorted(s,key=len,reverse=True)
@@ -33,6 +13,7 @@ while True:
         break
     s = [int(x) for x in input().split()]
     f = [s[x] for x in range(n) if s[x] == (x + 1)]
+
     print("Teste %d" % aux)
     aux += 1
     print(f[0])

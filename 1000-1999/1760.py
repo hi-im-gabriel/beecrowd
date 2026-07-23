@@ -1,20 +1,3 @@
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
 #n= list(map(int,input().split()))
 #string.append(input()) array
 #s=sorted(s,key=len,reverse=True)
@@ -29,5 +12,6 @@ while True:
         n=float(input())
         aux=float((sqrt(3)/4.00)*n*n)
         print("%.2f" % (aux*1.6))
+
     except EOFError:
         break

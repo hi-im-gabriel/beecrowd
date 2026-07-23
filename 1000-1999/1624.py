@@ -1,39 +1,3 @@
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
 #x=list(map(int,input().split()))
 #s=sorted(s,key=len,reverse=True)
 #f=list(dict.fromkeys(f)) remover repetidos
@@ -48,12 +12,16 @@ dp=v=w=None
 def knapsack(N, M):
     if N == 0 or M == 0:
         return 0
+
     if dp[N][M] == 0:
         if M >= W[N]:
             dp[N][M] = max(V[N] + knapsack(N - 1, M - W[N]), knapsack(N - 1, M))
         else:
             dp[N][M] = knapsack(N - 1, M)
+
     return dp[N][M]
+
+
 while True:
     N=int(input())
     if N==0:break

@@ -1,19 +1,5 @@
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
 from math import sqrt
+
 while True:
     try:
         m1, m2, m3 = map(float, input().split())

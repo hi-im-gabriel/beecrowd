@@ -1,33 +1,3 @@
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
 #n=list(map(int,input().split()))
 #s.pop() remover ultimo elemento
 #s=sorted(s,key=len,reverse=True)
@@ -46,6 +16,7 @@ def val(cpf):
     b1 = 0 if b1%11==10 else b1%11
     b2 = 0 if b2%11==10 else b2%11
     return  '{}{}'.format(b1, b2)
+
 while True:
     try:
         line = input()

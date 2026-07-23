@@ -1,8 +1,3 @@
-1
-2
-3
-4
-5
 string = input()
 print(string[0]+string[1]+string[2])
 print(string[4]+string[5]+string[6])

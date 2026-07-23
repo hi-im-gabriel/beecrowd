@@ -1,13 +1,3 @@
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
 #n=list(map(int,input().split()))
 #string.append(input()) array
 #s=sorted(s,key=len,reverse=True)

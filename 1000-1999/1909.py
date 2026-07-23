@@ -1,24 +1,6 @@
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
 def gcd(a, b):return a if b==0 else gcd(b,a%b)
 def lcm(a, b):return a*b//gcd(a,b)
+
 def res(t, l):
     bounce_time,aux = 0,1
     balls_time = [False]*(int(1e5)+1)

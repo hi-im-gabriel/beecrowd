@@ -1,9 +1,3 @@
-1
-2
-3
-4
-5
-6
 x=float(input())
 n=[]
 for i in range(100):

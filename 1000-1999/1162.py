@@ -1,49 +1,3 @@
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
 #n=list(map(int,input().split()))
 #string.append(input()) array
 #s=sorted(s,key=len,reverse=True)
@@ -53,6 +7,7 @@
 #import string
 #alfa = list(string.ascii_lowercase) lsit do alfabeto
 temp = [0] * 100000
+
 def merge(A, esq, meio, dir):
     trocas = 0
     i, j, k = esq, meio, esq 
@@ -74,6 +29,7 @@ def merge(A, esq, meio, dir):
         A[esq] = temp[esq]
         esq += 1
     return trocas
+
 def merget(A, esq, dir):
     trocas = 0
     if (esq < dir):
@@ -82,6 +38,7 @@ def merget(A, esq, dir):
         trocas += merget(A, meio + 1, dir)
         trocas += merge(A, esq, meio + 1, dir)
     return trocas
+
 for z in range(int(input())):
     m=int(input())
     vagoes=list(map(int,input().split()))

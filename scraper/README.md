@@ -26,4 +26,9 @@ Useful options:
 python scrape.py --headed
 python scrape.py --max-pages 3
 python scrape.py --dry-run
+python scrape.py --codes 3047,3053,3102
 ```
+
+`--codes` restricts the scraper to the listed problem codes and overwrites their
+existing solution files. This is useful for replacing previously corrupted
+downloads.

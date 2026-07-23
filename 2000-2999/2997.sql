@@ -11,9 +11,9 @@ WITH salarios AS (
 )
 SELECT dep.nome AS "Departamento",
        e.nome AS "Empregado",
-       ROUND(COALESCE(s.bruto, 0), 2) AS "Salario Bruto",
-       ROUND(COALESCE(ds.total, 0), 2) AS "Total Desconto",
-       ROUND(COALESCE(s.bruto, 0) - COALESCE(ds.total, 0), 2) AS "Salario Liquido"
+       COALESCE(s.bruto, 0) AS "Salario Bruto",
+       COALESCE(ds.total, 0) AS "Total Desconto",
+       COALESCE(s.bruto, 0) - COALESCE(ds.total, 0) AS "Salario Liquido"
 FROM empregado e
 JOIN divisao div ON div.cod_divisao = e.lotacao_div
 JOIN departamento dep ON dep.cod_dep = div.cod_dep

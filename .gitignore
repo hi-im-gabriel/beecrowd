@@ -1,2 +1,5 @@
 AGENTS.md
 venv/
+.venv/
+__pycache__/
+.env

@@ -1,0 +1,59 @@
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+#n= list(map(int,input().split()))
+#string.append(input()) array
+#s=sorted(s,key=len,reverse=True)
+#f=list(dict.fromkeys(f)) remover repetidos
+#s=re.sub(r"[^0-9 ]"," ",s) dxar apenas numeros
+#a=set(d).intersection(e)
+#import string
+#alfa = list(string.ascii_lowercase) lsit do alfabeto
+while True:
+    try:
+        s=input()
+        result=aux=maximus=0
+        i=0
+        while i<len(s):
+            if s[i] != 'x':
+                aux+=1
+            else:
+                if result==0:
+                    maximus=max(maximus,aux)
+                    result=1
+                else:
+                    maximus=max(maximus,aux/2)
+                aux=0
+            i+=1
+        maximus=int(max(maximus,aux))
+        print(maximus)
+    except EOFError:
+        break

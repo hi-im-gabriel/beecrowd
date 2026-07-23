@@ -19,7 +19,10 @@ from rich.table import Table
 
 BASE_URL = "https://judge.beecrowd.com"
 LOGIN_URL = f"{BASE_URL}/pt/login"
-RUNS_URL = f"{BASE_URL}/pt/runs?answer_id=1&page={{page}}"
+PYTHON_RUNS_URL = f"{BASE_URL}/pt/runs?answer_id=1&page={{page}}"
+SQL_RUNS_URL = (
+    f"{BASE_URL}/pt/runs?answer_id=1&language_id=13&page={{page}}"
+)
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 console = Console()
 
@@ -81,19 +84,20 @@ def credentials() -> tuple[str, str]:
     return email, password
 
 
-def existing_problem_codes() -> set[str]:
+def existing_problem_codes(extension: str) -> set[str]:
     return {
         path.stem
-        for path in PROJECT_ROOT.glob("[0-9]*-[0-9]*/*.py")
+        for path in PROJECT_ROOT.glob(f"[0-9]*-[0-9]*/*.{extension}")
         if path.stem.isdigit()
     }
 
 
-def solution_path(problem: str) -> Path:
+def solution_path(problem: str, is_sql: bool = False) -> Path:
     number = int(problem)
     range_start = (number // 1000) * 1000
     range_end = range_start + 999
-    return PROJECT_ROOT / f"{range_start}-{range_end}" / f"{problem}.py"
+    filename = f"{problem}.sql" if is_sql else f"{problem}.py"
+    return PROJECT_ROOT / f"{range_start}-{range_end}" / filename
 
 
 def login(page: Page, email: str, password: str) -> None:
@@ -115,8 +119,12 @@ def text_in_column(row: Locator, index: int) -> str:
     return row.locator("td").nth(index).inner_text().strip()
 
 
-def submissions_on_page(page: Page, page_number: int) -> list[Submission]:
-    page.goto(RUNS_URL.format(page=page_number), wait_until="domcontentloaded")
+def submissions_on_page(
+    page: Page,
+    page_number: int,
+    runs_url: str,
+) -> list[Submission]:
+    page.goto(runs_url.format(page=page_number), wait_until="domcontentloaded")
     rows = page.locator("#element table tbody tr")
     if not rows.count():
         rows = page.locator("#element tbody tr")
@@ -157,68 +165,86 @@ def fetch_code(page: Page, submission: Submission) -> str:
     return code.replace("\r\n", "\n").rstrip() + "\n"
 
 
-def scrape(
+def scrape_language(
     page: Page,
     max_pages: int | None,
     dry_run: bool,
     requested_codes: set[str] | None,
-) -> int:
-    existing = existing_problem_codes()
+    *,
+    label: str,
+    extension: str,
+    runs_url: str,
+    filter_python: bool,
+) -> tuple[Counter[str], set[str]]:
+    existing = existing_problem_codes(extension)
     selected: set[str] = set()
     downloaded = 0
     stats: Counter[str] = Counter()
     page_number = 1
 
     console.print(
-        f"[dim]Found {len(existing)} existing Python solution(s) in the repository.[/]"
+        f"\n[bold cyan]◆ {label}[/]\n"
+        f"[dim]Found {len(existing)} existing .{extension} solution(s) "
+        "in the repository.[/]"
     )
-    if requested_codes:
-        console.print(
-            f"[bold magenta]Override mode:[/] looking for "
-            f"{len(requested_codes)} requested problem(s)."
-        )
 
     while max_pages is None or page_number <= max_pages:
         with console.status(
-            f"[cyan]Scanning accepted runs — page {page_number}…", spinner="bouncingBar"
+            f"[cyan]Scanning {label} accepted runs — page {page_number}…",
+            spinner="bouncingBar",
         ):
-            submissions = submissions_on_page(page, page_number)
+            submissions = submissions_on_page(page, page_number, runs_url)
         if not submissions:
-            console.print("[yellow]◇[/] No more runs found; reached the last page.")
+            console.print(
+                f"[yellow]◇[/] No more {label} runs found; reached the last page."
+            )
             break
 
-        python_submissions = [
-            submission
-            for submission in submissions
-            if "Python 3" in submission.language
-        ]
-        eligible = [
-            submission
-            for submission in python_submissions
-            if (
+        matching_submissions = (
+            [
+                submission
+                for submission in submissions
+                if "Python 3" in submission.language
+            ]
+            if filter_python
+            else submissions
+        )
+        eligible: list[Submission] = []
+        selected_on_page: set[str] = set()
+        for submission in matching_submissions:
+            should_download = (
                 submission.problem in requested_codes
                 if requested_codes
                 else submission.problem not in existing
             )
-            and submission.problem not in selected
-        ]
+            if (
+                should_download
+                and submission.problem not in selected
+                and submission.problem not in selected_on_page
+            ):
+                eligible.append(submission)
+                selected_on_page.add(submission.problem)
         stats["runs"] += len(submissions)
-        stats["python"] += len(python_submissions)
+        stats["matching"] += len(matching_submissions)
         stats["eligible"] += len(eligible)
-        stats["skipped"] += len(python_submissions) - len(eligible)
+        stats["skipped"] += len(matching_submissions) - len(eligible)
 
         for submission in eligible:
             selected.add(submission.problem)
-            destination = solution_path(submission.problem)
+            destination = solution_path(
+                submission.problem,
+                is_sql=extension == "sql",
+            )
             if dry_run:
                 console.print(
-                    f"[bold magenta]◎ DRY RUN[/] [bold]{submission.problem}[/] "
+                    f"[bold magenta]◎ DRY RUN[/] [bold]{submission.problem}.{extension}[/] "
                     f"[dim]← {submission.code_url}[/]"
                 )
                 continue
 
             with console.status(
-                f"[cyan]Downloading problem {submission.problem}…", spinner="dots"
+                f"[cyan]Downloading {submission.problem}.{extension}…",
+                spinner="dots",
             ):
                 code = fetch_code(page, submission)
             destination.parent.mkdir(parents=True, exist_ok=True)
@@ -231,9 +257,9 @@ def scrape(
             )
 
         console.print(
-            f"[blue]◆ PAGE {page_number}[/]  "
+            f"[blue]◆ {label} PAGE {page_number}[/]  "
             f"[bold]{len(submissions)}[/] runs  •  "
-            f"[green]{len(python_submissions)}[/] Python 3  •  "
+            f"[green]{len(matching_submissions)}[/] {label}  •  "
             f"[yellow]{len(eligible)}[/] new"
         )
         if requested_codes and selected == requested_codes:
@@ -242,27 +268,74 @@ def scrape(
         page_number += 1
 
     stats["downloaded"] = downloaded
-    show_summary(stats, dry_run)
+    return stats, selected
+
+
+def scrape(
+    page: Page,
+    max_pages: int | None,
+    dry_run: bool,
+    requested_codes: set[str] | None,
+) -> None:
     if requested_codes:
-        missing = requested_codes - selected
+        console.print(
+            f"[bold magenta]Override mode:[/] looking for "
+            f"{len(requested_codes)} requested problem(s)."
+        )
+
+    python_stats, python_found = scrape_language(
+        page,
+        max_pages,
+        dry_run,
+        requested_codes,
+        label="Python 3",
+        extension="py",
+        runs_url=PYTHON_RUNS_URL,
+        filter_python=True,
+    )
+    sql_stats, sql_found = scrape_language(
+        page,
+        max_pages,
+        dry_run,
+        requested_codes,
+        label="PostgreSQL",
+        extension="sql",
+        runs_url=SQL_RUNS_URL,
+        filter_python=False,
+    )
+    show_summary(python_stats, sql_stats, dry_run)
+
+    if requested_codes:
+        missing = requested_codes - python_found - sql_found
         if missing:
             console.print(
-                "[bold yellow]Not found as accepted Python 3:[/] "
+                "[bold yellow]Not found as accepted Python 3 or PostgreSQL:[/] "
                 + ", ".join(sorted(missing, key=int))
             )
-    return downloaded
 
 
-def show_summary(stats: Counter[str], dry_run: bool) -> None:
+def show_summary(
+    python_stats: Counter[str],
+    sql_stats: Counter[str],
+    dry_run: bool,
+) -> None:
     table = Table.grid(padding=(0, 2))
     table.add_column(style="dim")
     table.add_column(justify="right", style="bold")
-    table.add_row("Accepted runs inspected", str(stats["runs"]))
-    table.add_row("Python 3 submissions", str(stats["python"]))
-    table.add_row("Already present / duplicate", str(stats["skipped"]))
+    table.add_row("Python runs inspected", str(python_stats["runs"]))
+    table.add_row("Python 3 submissions", str(python_stats["matching"]))
+    table.add_row("PostgreSQL runs inspected", str(sql_stats["runs"]))
+    table.add_row(
+        "Already present / duplicate",
+        str(python_stats["skipped"] + sql_stats["skipped"]),
+    )
     table.add_row(
         "Would download" if dry_run else "Solutions downloaded",
-        str(stats["eligible"] if dry_run else stats["downloaded"]),
+        str(
+            python_stats["eligible"] + sql_stats["eligible"]
+            if dry_run
+            else python_stats["downloaded"] + sql_stats["downloaded"]
+        ),
     )
     console.print(Panel(table, title="[bold cyan]Scrape complete[/]", border_style="cyan"))
 

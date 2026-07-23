@@ -3,3 +3,5 @@ venv/
 .venv/
 __pycache__/
 .env
+scraper/test.py
+scraper/.browser-data/

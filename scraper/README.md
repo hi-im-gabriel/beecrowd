@@ -1,7 +1,8 @@
 # beecrowd accepted-solutions scraper
 
-Downloads accepted Python 3 submissions that do not already have a solution in
-this repository.
+Downloads accepted Python 3 and PostgreSQL submissions that do not already have
+a solution in this repository. Python solutions are saved as `.py`; PostgreSQL
+solutions are fetched using beecrowd language ID 13 and saved as `.sql`.
 
 ## Setup
 
@@ -29,6 +30,6 @@ python scrape.py --dry-run
 python scrape.py --codes 3047,3053,3102
 ```
 
-`--codes` restricts the scraper to the listed problem codes and overwrites their
-existing solution files. This is useful for replacing previously corrupted
-downloads.
+`--codes` restricts the scraper to the listed problem codes and overwrites
+matching existing `.py` or `.sql` solution files. This is useful for replacing
+previously corrupted downloads.

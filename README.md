@@ -1,6 +1,6 @@
 # Beecrowd solutions
 
-My Python solutions for problems from [Beecrowd](https://www.beecrowd.com.br/),
+My Python/SQL solutions for problems from [Beecrowd](https://www.beecrowd.com.br/),
 previously known as URI Online Judge.
 
 ## Repository structure
@@ -10,7 +10,7 @@ Solutions are named after their problem ID and grouped into thousand-wide ranges
 ```text
 1000-1999/
   1000.py
-  1001.py
+  1001.sql
   ...
 2000-2999/
   2000.py

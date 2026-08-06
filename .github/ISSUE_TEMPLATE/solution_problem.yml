@@ -1,0 +1,61 @@
+name: Report a solution problem
+description: Report an incorrect, incomplete, or incompatible solution.
+title: "[Solution]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve the solution collection. Please do not include beecrowd credentials or session data.
+  - type: input
+    id: problem_id
+    attributes:
+      label: Problem ID
+      description: Enter the numeric beecrowd problem ID.
+      placeholder: "1001"
+    validations:
+      required: true
+  - type: input
+    id: solution_file
+    attributes:
+      label: Solution file
+      description: Which repository file is affected?
+      placeholder: 1000-1999/1001.py
+    validations:
+      required: true
+  - type: dropdown
+    id: problem_type
+    attributes:
+      label: Problem type
+      options:
+        - Wrong answer
+        - Runtime error
+        - Time limit exceeded
+        - Output formatting
+        - Language or judge compatibility
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: Describe what happened and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction input and output
+      description: Provide a minimal input, actual output, and expected output when possible.
+      render: text
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched for an existing issue about this problem.
+          required: true
+        - label: I removed credentials, session data, and other private information.
+          required: true

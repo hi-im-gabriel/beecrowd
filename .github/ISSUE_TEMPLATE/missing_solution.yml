@@ -1,0 +1,45 @@
+name: Request a missing solution
+description: Suggest a beecrowd problem that is not yet represented.
+title: "[Missing solution]: "
+labels:
+  - enhancement
+body:
+  - type: input
+    id: problem_id
+    attributes:
+      label: Problem ID
+      description: Enter the numeric beecrowd problem ID.
+      placeholder: "1001"
+    validations:
+      required: true
+  - type: input
+    id: problem_url
+    attributes:
+      label: Problem URL
+      description: Link to the problem on beecrowd.
+      placeholder: https://judge.beecrowd.com/en/problems/view/1001
+    validations:
+      required: true
+  - type: dropdown
+    id: language
+    attributes:
+      label: Requested language
+      options:
+        - Python 3
+        - PostgreSQL
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add any useful context about the request.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I confirmed that this solution is not already in the repository.
+          required: true
+        - label: I searched for an existing request for this problem.
+          required: true

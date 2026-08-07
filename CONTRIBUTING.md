@@ -21,7 +21,7 @@ improve the scraper and documentation are welcome.
 
 Python solutions in this repository follow these conventions:
 
-- Use `input()` and `print()` for input and output; do not use `sys` for them.
+- Prefer `input()` and `print()` for input and output; do not use `sys` for them unless necessary.
 - Put the script at the root of the file without a `main()` function or an
   `if __name__ == "__main__":` guard.
 - When input continues until EOF, use a `while True` loop and handle
